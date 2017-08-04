@@ -22,6 +22,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	void OpenDoor();
+	void CloseDoor();
 
 public:	
 	// Called every frame
@@ -35,4 +36,10 @@ private:
 	
 	//Pawn inherits from actor
 	AActor* ActorThatOpens;
+
+	float CloseDoorDelay = 1.0f;
+	float LastDoorOpenTime;
+
+	float openDoorAngle = -90.0f;
+	AActor* Owner;
 };
