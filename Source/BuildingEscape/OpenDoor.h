@@ -36,7 +36,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float TriggerMass = 30.f;
-	float CloseDoorDelay = 1.0f;
+	float CloseDoorDelay = 0.1f;
 	float LastDoorOpenTime;
 
 	float GetTotalMassOfActorsOnPlate();
