@@ -31,10 +31,17 @@ void UOpenDoor::BeginPlay()
 
 void UOpenDoor::OpenDoor()
 {
+	if (!Owner) {
+		UE_LOG(LogTemp, Error, TEXT("Missing 'Owner' Actor Pointer"));
+		return;
+	}
 	Owner->SetActorRotation(FRotator(0.0f, openDoorAngle, 0.0f), ETeleportType::None);
 }
 void UOpenDoor::CloseDoor()
 {
+	if (!Owner) { 
+		UE_LOG(LogTemp, Error, TEXT("Missing 'Owner' Actor Pointer"));
+		return; }
 	Owner->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f), ETeleportType::None);
 }
 // Called every frame
@@ -63,6 +70,10 @@ float UOpenDoor::GetTotalMassOfActorsOnPlate()
 
 	//Find all overlapping actors
 	TArray<AActor*> OverlappingActors;
+
+	if (!PressurePlate) { 
+		UE_LOG(LogTemp, Error, TEXT("Missing PressurePlate component value (nullptr)"));
+		return 0.0f; }
 	PressurePlate->GetOverlappingActors(OUT OverlappingActors);
 	//Iterate through all actors to find masses
 

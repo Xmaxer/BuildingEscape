@@ -55,6 +55,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if (!PhysicsHandle) { return; }
 	if (PhysicsHandle->GrabbedComponent)
 	{
 		PhysicsHandle->SetTargetLocation(GetLineTraceEnd());
@@ -106,6 +107,7 @@ void UGrabber::Grab()
 	AActor* ActorHit = hit.GetActor();
 	if (ActorHit)
 	{
+		if (!PhysicsHandle) { return; }
 		FVector loc = ComponentToGrab->GetOwner()->GetActorLocation();
 		FRotator rot = ComponentToGrab->GetOwner()->GetActorRotation();
 		PhysicsHandle->GrabComponentAtLocationWithRotation(ComponentToGrab, NAME_None, loc, rot);
@@ -115,6 +117,7 @@ void UGrabber::Grab()
 
 void UGrabber::Release()
 {
+	if (!PhysicsHandle) { UE_LOG(LogTemp, Error, TEXT("Missing physicshandle component, can't release item!")); return; }
 	PhysicsHandle->ReleaseComponent();
 }
 
