@@ -31,18 +31,20 @@ void UOpenDoor::BeginPlay()
 
 void UOpenDoor::OpenDoor()
 {
-	if (!Owner) {
-		UE_LOG(LogTemp, Error, TEXT("Missing 'Owner' Actor Pointer"));
-		return;
-	}
-	Owner->SetActorRotation(FRotator(0.0f, openDoorAngle, 0.0f), ETeleportType::None);
+	//if (!Owner) {
+	//	UE_LOG(LogTemp, Error, TEXT("Missing 'Owner' Actor Pointer"));
+	//	return;
+	//}
+	//Owner->SetActorRotation(FRotator(0.0f, openDoorAngle, 0.0f), ETeleportType::None);
+	OnDoorOpen.Broadcast();
 }
 void UOpenDoor::CloseDoor()
 {
-	if (!Owner) { 
-		UE_LOG(LogTemp, Error, TEXT("Missing 'Owner' Actor Pointer"));
-		return; }
-	Owner->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f), ETeleportType::None);
+	//if (!Owner) { 
+	//	UE_LOG(LogTemp, Error, TEXT("Missing 'Owner' Actor Pointer"));
+	//	return; }
+	//Owner->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f), ETeleportType::None);
+	OnDoorClose.Broadcast();
 }
 // Called every frame
 void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -53,15 +55,12 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	if (GetTotalMassOfActorsOnPlate() > TriggerMass)
 	{
 		OpenDoor();
-		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
 	}
-
-	float CurrentTime = GetWorld()->GetTimeSeconds();
-
-	if ((CurrentTime - LastDoorOpenTime) >= CloseDoorDelay)
+	else
 	{
 		CloseDoor();
 	}
+
 }
 
 float UOpenDoor::GetTotalMassOfActorsOnPlate()
@@ -72,7 +71,7 @@ float UOpenDoor::GetTotalMassOfActorsOnPlate()
 	TArray<AActor*> OverlappingActors;
 
 	if (!PressurePlate) { 
-		UE_LOG(LogTemp, Error, TEXT("Missing PressurePlate component value (nullptr)"));
+		UE_LOG(LogTemp, Error, TEXT("%s is missing pressure plate value"), *GetOwner()->GetName());
 		return 0.0f; }
 	PressurePlate->GetOverlappingActors(OUT OverlappingActors);
 	//Iterate through all actors to find masses
@@ -80,7 +79,7 @@ float UOpenDoor::GetTotalMassOfActorsOnPlate()
 	for (const AActor* actor : OverlappingActors)
 	{
 		TotalMass += actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
-		UE_LOG(LogTemp, Warning, TEXT("%s is on volume"), *actor->GetName())
+		//UE_LOG(LogTemp, Warning, TEXT("%s is on volume"), *actor->GetName())
 	}
 
 	return TotalMass;
